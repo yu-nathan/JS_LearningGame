@@ -242,7 +242,7 @@
 					Math.abs(aipaddle_y_move/2) &&
 					aipaddle_release <= aipaddle_y + PADDLE_HEIGHT/2 +
 					Math.abs(aipaddle_y_move/2)) {
-					paddleShot();
+					paddleShot(true);
 					just_scored = false;
 			}
 		}
@@ -269,7 +269,7 @@
 
 	/* Shoots ball at a different y speed
 		depending on the location of the paddle. */
-	function paddleShot() {
+	function paddleShot(AI=false) {
 		if (ball_y >= canvas.height/2 - 10 &&
 				ball_y <= canvas.height/2 + 10) {
 					ball_speed_y = 0;
@@ -278,7 +278,11 @@
 		} else {
 			ball_speed_y = 4;
 		}
-		ball_speed_x = 5;
+		if (AI) {
+			ball_speed_x = -5;
+		} else {
+			ball_speed_x = 5;
+		}
 	}
 
 	/* Returns a random int between min (included) and max (excluded). */
