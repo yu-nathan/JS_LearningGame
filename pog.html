@@ -1,0 +1,196 @@
+<html>
+<u><b>Nathan's fucking pong.</b></u>
+<br>
+
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script type="text/javascript">
+  var canvas;
+  var canvasContext;
+
+  var ball_x = 50;
+  var ball_y = 50;
+  var ball_speed_x = 5;
+  var ball_speed_y = 4;
+
+  var ppaddle_y = 250;
+  var aipaddle_y = 250;
+
+  var p1score = 0;
+  var p2score = 0;
+  var show_win_screen = false;
+
+  const PADDLE_THICKNESS = 10;
+  const PADDLE_HEIGHT = 100;
+  const WINNING_SCORE = 1;
+
+  window.onload = function() {
+    console.log("Hello World!");
+    /* Getting the canvas object and creating variable. */
+    canvas = document.getElementById('gameCanvas');
+    canvas.width = 800;
+    canvas.height = 600;
+    canvasContext = canvas.getContext('2d');
+
+    /* Calls draw and move 60 fps. */
+    var fps = 60;
+    setInterval(function() {
+        move();
+        draw();
+    }, 1000/fps);
+
+    /* Event listener for mouse click. */
+    canvas.addEventListener('mousedown',
+      function(evt) {
+        if (show_win_screen) {
+          p1score = 0;
+          p2score = 0;
+          show_win_screen = false;
+        }
+      });
+
+    /* Event listener for mouse position. */
+    canvas.addEventListener('mousemove',
+      function(evt) {
+        var mousePos = calcMousePos(evt);
+        ppaddle_y = mousePos.y - (PADDLE_HEIGHT/2);
+      });
+  }
+
+  /* Controls movement of ball object and AI. */
+  function move() {
+    if (show_win_screen) {
+      return;
+    }
+
+    aiMove();
+
+    ball_x += ball_speed_x;
+    ball_y += ball_speed_y;
+    if (ball_x < PADDLE_THICKNESS) {
+      if (ball_y > ppaddle_y &&
+          ball_y < ppaddle_y + PADDLE_HEIGHT) {
+          ball_speed_x *= -1;
+
+          var delta_y = ball_y - (ppaddle_y + PADDLE_HEIGHT/2);
+          ball_speed_y = delta_y * 0.35;
+      }
+    }
+    if (ball_x < 0) {
+      p2score += 1;
+      ballReset();
+    }
+    if (ball_x > canvas.width - PADDLE_THICKNESS) {
+      if (ball_y > aipaddle_y &&
+          ball_y < aipaddle_y + PADDLE_HEIGHT) {
+          ball_speed_x *= -1;
+
+          var delta_y = ball_y - (aipaddle_y + PADDLE_HEIGHT/2);
+          ball_speed_y = delta_y * 0.35;
+      }
+    }
+    if (ball_x > canvas.width) {
+      p1score += 1;
+      ballReset();
+    }
+    if (ball_y > canvas.height) {
+      ball_speed_y *= -1;
+    }
+    if (ball_y < 0) {
+      ball_speed_y *= -1;
+    }
+  }
+
+  /* Drawing objects on canvas object. */
+  function draw() {
+    // background
+    colorRect(0, 0, canvas.width, canvas.height, 'black');
+    drawNet();
+
+    // win screen
+    if (!show_win_screen) {
+      canvasContext.fillStyle = 'white';
+      canvasContext.font = 'italic bold 30px georgia'
+      if (p1score != WINNING_SCORE) {
+        canvasContext.fillText('Left player wins!', 275, 200);
+      } else if (p2score != WINNING_SCORE) {
+        canvasContext.fillText('Right player wins!', 275, 200);
+      }
+      canvasContext.font = '20px georgia'
+      canvasContext.fillText('click to continue', 330, 500);
+      return;
+    }
+
+    // net
+    drawNet();
+
+    // player paddle
+    colorRect(0, ppaddle_y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'white');
+
+    // AI paddle
+    colorRect(canvas.width - 10, aipaddle_y, PADDLE_THICKNESS,
+              PADDLE_HEIGHT, 'white');
+
+    // ball
+    colorCirc(ball_x, ball_y, 10, 'red');
+
+    // scoreboard
+    canvasContext.fillStyle = 'white';
+    canvasContext.fillText(p1score, canvas.width/2 - 30, 100);
+    canvasContext.fillText(p2score, canvas.width - (canvas.width/2 - 30), 100);
+  }
+
+  /* Fills in circle objects. */
+  function colorCirc(center_x, center_y, radius, color) {
+    canvasContext.fillStyle = color;
+    canvasContext.beginPath();
+    canvasContext.arc(center_x, center_y, radius, 0, Math.PI*2, true);
+    canvasContext.fill();
+  }
+
+  /* Fills in rectangle objects. */
+  function colorRect(left_x, top_y, width, height, color) {
+    canvasContext.fillStyle = color;
+    canvasContext.fillRect(left_x, top_y, width, height);
+  }
+
+  /* Draw the net. */
+  function drawNet() {
+    for(var i = 0; i < canvas.height; i += 40) {
+      colorRect(canvas.width/2 - 1, i, 2, 20, 'white');
+    }
+  }
+
+  /* Mouse position. */
+  function calcMousePos(evt) {
+    var rect = canvas.getBoundingClientRect();
+    var root = document.documentElement;
+    var mouse_x = evt.clientX - rect.left - root.scrollLeft;
+    var mouse_y = evt.clientY - rect.top - root.scrollTop;
+    return {
+      x:mouse_x,
+      y:mouse_y
+    };
+  }
+
+  /* Simple AI controls. */
+  function aiMove() {
+    var aipaddle_center = aipaddle_y + (PADDLE_HEIGHT/2);
+    if (aipaddle_center < ball_y - 35) {
+      aipaddle_y += 6;
+    } else if (aipaddle_center > ball_y + 35){
+      aipaddle_y -=6;
+    }
+  }
+
+  /* Resets ball when it hits the wall. */
+  function ballReset() {
+    ball_x = canvas.width/2;
+    ball_y = canvas.height/2;
+    if (p1score >= WINNING_SCORE || p2score >= WINNING_SCORE) {
+      show_win_screen = true;
+    }
+  }
+</script>
+
+</html>
