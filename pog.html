@@ -6,7 +6,8 @@
 
 <script type="text/javascript">
   var canvas;
-  var canvasContext;
+  var ctx;
+  var txt;
 
   var ball_x = 50;
   var ball_y = 50;
@@ -22,7 +23,7 @@
 
   const PADDLE_THICKNESS = 10;
   const PADDLE_HEIGHT = 100;
-  const WINNING_SCORE = 1;
+  const WINNING_SCORE = 0;
 
   window.onload = function() {
     console.log("Hello World!");
@@ -30,7 +31,7 @@
     canvas = document.getElementById('gameCanvas');
     canvas.width = 800;
     canvas.height = 600;
-    canvasContext = canvas.getContext('2d');
+    ctx = canvas.getContext('2d');
 
     /* Calls draw and move 60 fps. */
     var fps = 60;
@@ -54,6 +55,11 @@
       function(evt) {
         var mousePos = calcMousePos(evt);
         ppaddle_y = mousePos.y - (PADDLE_HEIGHT/2);
+        if (ppaddle_y < 0) {
+          ppaddle_y = 0;
+        } else if (ppaddle_y > canvas.height - PADDLE_HEIGHT) {
+          ppaddle_y = canvas.height - PADDLE_HEIGHT;
+        }
       });
   }
 
@@ -105,19 +111,31 @@
   function draw() {
     // background
     colorRect(0, 0, canvas.width, canvas.height, 'black');
-    drawNet();
 
     // win screen
-    if (!show_win_screen) {
-      canvasContext.fillStyle = 'white';
-      canvasContext.font = 'italic bold 30px georgia'
-      if (p1score != WINNING_SCORE) {
-        canvasContext.fillText('Left player wins!', 275, 200);
-      } else if (p2score != WINNING_SCORE) {
-        canvasContext.fillText('Right player wins!', 275, 200);
+    if (show_win_screen) {
+      ctx.fillStyle = 'white';
+      ctx.font = 'italic bold 30px georgia'
+      if (p1score >= WINNING_SCORE) {
+        txt = 'Left player wins!';
+        ctx.fillText(txt, canvas.width/2
+                              - ctx.measureText(txt).width/2, 200);
+        ctx.font = '27px georgia';
+        txt = p1score + ' : ' + p2score;
+        ctx.fillText(txt, canvas.width/2
+                              - ctx.measureText(txt).width/2, 250);
+      } else if (p2score >= WINNING_SCORE) {
+        txt = 'Right player wins!';
+        ctx.fillText(txt, canvas.width/2
+                              - ctx.measureText(txt).width/2, 200);
+        ctx.font = '27px georgia';
+        ctx.fillText(txt, canvas.width/2
+                              - ctx.measureText(txt).width/2, 250);
       }
-      canvasContext.font = '20px georgia'
-      canvasContext.fillText('click to continue', 330, 500);
+      ctx.font = '20px georgia'
+      txt = 'Click to continue.'
+      ctx.fillText(txt, canvas.width/2
+                            - ctx.measureText(txt).width/2, 500);
       return;
     }
 
@@ -135,28 +153,35 @@
     colorCirc(ball_x, ball_y, 10, 'red');
 
     // scoreboard
-    canvasContext.fillStyle = 'white';
-    canvasContext.fillText(p1score, canvas.width/2 - 30, 100);
-    canvasContext.fillText(p2score, canvas.width - (canvas.width/2 - 30), 100);
+    ctx.fillStyle = 'white';
+    ctx.font = 'underline bold 40px georgia'
+    txt = 'Score';
+    ctx.fillText(txt, canvas.width/2
+                          - ctx.measureText(txt).width/2, 50);
+    colorRect(canvas.width/2 - 75, 55, 150, 3, 'white');
+    ctx.font = 'bold 35px georgia'
+    txt = p1score + '   ' + p2score;
+    ctx.fillText(txt, canvas.width/2
+                          - ctx.measureText(txt).width/2, 100);
   }
 
   /* Fills in circle objects. */
   function colorCirc(center_x, center_y, radius, color) {
-    canvasContext.fillStyle = color;
-    canvasContext.beginPath();
-    canvasContext.arc(center_x, center_y, radius, 0, Math.PI*2, true);
-    canvasContext.fill();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(center_x, center_y, radius, 0, Math.PI*2, true);
+    ctx.fill();
   }
 
   /* Fills in rectangle objects. */
   function colorRect(left_x, top_y, width, height, color) {
-    canvasContext.fillStyle = color;
-    canvasContext.fillRect(left_x, top_y, width, height);
+    ctx.fillStyle = color;
+    ctx.fillRect(left_x, top_y, width, height);
   }
 
   /* Draw the net. */
   function drawNet() {
-    for(var i = 0; i < canvas.height; i += 40) {
+    for(var i = 55; i < canvas.height; i += 40) {
       colorRect(canvas.width/2 - 1, i, 2, 20, 'white');
     }
   }
