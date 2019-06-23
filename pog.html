@@ -49,6 +49,8 @@
   var just_scored = true;
   var scorer = 'P2';
 
+	var paused = false;
+
   const PADDLE_THICKNESS = 10;
   const PADDLE_HEIGHT = 100;
   const WINNING_SCORE = 5;
@@ -84,6 +86,19 @@
         }
       });
 
+		/* Event listener for escape key press. */
+		document.addEventListener('keyup',
+			function(evt) {
+				var key = evt.key || evt.keyCode;
+				if (key === 'Escape' || key === 'Esc' || key === 27) {
+					if (paused) {
+						paused = false;
+					} else {
+						paused = true;
+					}
+				}
+			});
+
     /* Event listener for mouse position. */
     canvas.addEventListener('mousemove',
       function(evt) {
@@ -99,7 +114,7 @@
 
   /* Controls movement of ball object and AI. */
   function move() {
-    if (show_win_screen) {
+    if (show_win_screen || paused) {
       return;
     }
 
@@ -160,6 +175,16 @@
 
   /* Drawing objects on canvas object. */
   function draw() {
+		// pause screen
+		if (paused) {
+			ctx.fillStyle = '#49FB35';
+			ctx.font = 'bold 30px georgia'
+			txt = 'PAUSED';
+			ctx.fillText(txt, canvas.width/2
+														- ctx.measureText(txt).width/2, canvas.height/2 - 15);
+			return;
+		}
+
     // background
     colorRect(0, 0, canvas.width, canvas.height, 'black');
 
@@ -206,7 +231,7 @@
 
     // scoreboard
     ctx.fillStyle = 'white';
-    ctx.font = 'underline bold 40px georgia'
+    ctx.font = 'bold 40px georgia'
     txt = 'Score';
     ctx.fillText(txt, canvas.width/2
                           - ctx.measureText(txt).width/2, 50);
