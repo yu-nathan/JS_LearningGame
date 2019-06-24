@@ -1,6 +1,10 @@
 <html>
 	<head>
 			<style>
+			@font-face {
+				font-family: pdark; src: url('pdark.ttf');
+			}
+
 			#gameCanvas {
 				padding: 0;
 				margin: auto;
@@ -8,11 +12,12 @@
 				width: 800px;
 				border: 1px solid red;
 			}
+
 			p {
 				margin: 0 auto;
 				text-align: center;
 				font-size: 30px;
-				font-family: georgia;
+				font-family: pdark;
 			}
 			</style>
 	</head>
@@ -178,7 +183,7 @@
 		// pause screen
 		if (paused) {
 			ctx.fillStyle = '#49FB35';
-			ctx.font = 'bold 30px georgia'
+			ctx.font = 'bold 30px pdark'
 			txt = 'PAUSED';
 			ctx.fillText(txt, canvas.width/2
 														- ctx.measureText(txt).width/2, canvas.height/2 - 15);
@@ -191,12 +196,12 @@
     // win screen
     if (show_win_screen) {
       ctx.fillStyle = 'white';
-      ctx.font = 'italic bold 30px georgia'
+      ctx.font = 'italic bold 30px pdark'
       if (p1score >= WINNING_SCORE) {
         txt = 'Left player wins!';
         ctx.fillText(txt, canvas.width/2
                               - ctx.measureText(txt).width/2, 200);
-        ctx.font = '27px georgia';
+        ctx.font = '27px pdark';
         txt = p1score + ' : ' + p2score;
         ctx.fillText(txt, canvas.width/2
                               - ctx.measureText(txt).width/2, 250);
@@ -204,12 +209,12 @@
         txt = 'Right player wins!';
         ctx.fillText(txt, canvas.width/2
                               - ctx.measureText(txt).width/2, 200);
-        ctx.font = '27px georgia';
+        ctx.font = '27px pdark';
 				txt = p1score + ' : ' + p2score;
         ctx.fillText(txt, canvas.width/2
                               - ctx.measureText(txt).width/2, 250);
       }
-      ctx.font = '20px georgia'
+      ctx.font = '20px pdark'
       txt = 'Click to continue.'
       ctx.fillText(txt, canvas.width/2
                             - ctx.measureText(txt).width/2, 500);
@@ -231,12 +236,12 @@
 
     // scoreboard
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 40px georgia'
+    ctx.font = 'bold 40px pdark'
     txt = 'Score';
     ctx.fillText(txt, canvas.width/2
                           - ctx.measureText(txt).width/2, 50);
     colorRect(canvas.width/2 - 75, 55, 150, 3, 'white');
-    ctx.font = 'bold 35px georgia'
+    ctx.font = 'bold 35px pdark'
     txt = p1score + '   ' + p2score;
     ctx.fillText(txt, canvas.width/2
                           - ctx.measureText(txt).width/2, 100);
