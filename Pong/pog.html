@@ -35,6 +35,8 @@
   var ctx;
   var txt;
 	var fps = 60;
+	var mousePos_y;
+	var mousePos_x;
 
   var ball_x = 50;
   var ball_y = 50;
@@ -48,6 +50,7 @@
 	var aipaddle_y_move = 6;
 	var aipaddle_release;
 
+	var show_start_screen = true;
   var p1score = 0;
   var p2score = 0;
   var show_win_screen = false;
@@ -59,7 +62,7 @@
 
   const PADDLE_THICKNESS = 10;
   const PADDLE_HEIGHT = 100;
-  const WINNING_SCORE = 5;
+  const WINNING_SCORE = 0;
 
   window.onload = function() {
     console.log("Hello World!");
@@ -105,7 +108,7 @@
 				if (key === 'Escape' || key === 'Esc' || key === 27) {
 					if (paused) {
 						paused = false;
-					} else {
+					} else if (!paused && !show_start_screen && !show_win_screen){
 						paused = true;
 						pause_render = false;
 					}
@@ -116,6 +119,8 @@
     canvas.addEventListener('mousemove',
       function(evt) {
         var mousePos = calcMousePos(evt);
+				mousePos_x = mousePos.x;
+				mousePos_y = mousePos.y;
         ppaddle_y = mousePos.y - (PADDLE_HEIGHT/2);
         if (ppaddle_y < 0) {
           ppaddle_y = 0;
@@ -196,7 +201,8 @@
 				ctx.font = 'bold 30px pdark'
 				txt = 'PAUSED';
 				ctx.fillText(txt, canvas.width/2
-															- ctx.measureText(txt).width/2, canvas.height/2 - 15);
+															- ctx.measureText(txt).width/2,
+															canvas.height/2 - 15);
 				ctx.restore();
 				pause_render = true;
 			}
@@ -205,6 +211,12 @@
 
     // background
     colorRect(0, 0, canvas.width, canvas.height, 'black');
+
+		// start screen
+		if (show_start_screen) {
+			draw_start(txt, 'pdark', 'white	');
+			return;
+		}
 
     // win screen
     if (show_win_screen) {
@@ -357,6 +369,33 @@
 	/* Returns a random int between min (included) and max (excluded). */
 	function rndInt(min, max) {
 		return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	/* Draws the starting screen with options for choosing difficulty. */
+	function draw_start(txt, font, color) {
+		ctx.fillStyle = color;
+		ctx.font = 'bold 80px' + ' ' + font;
+		txt = 'PONG';
+		ctx.fillText(txt, canvas.width/2
+													- ctx.measureText(txt).width/2, 225);
+
+		// difficulties
+		ctx.font = 'bold 35px' + ' ' + font;
+		txt = 'DIFFICULTY';
+		ctx.fillText(txt, canvas.width/2
+													- ctx.measureText(txt).width/2, 330);
+		colorRect(canvas.width/2 - ctx.measureText(txt).width/2,
+							340, ctx.measureText(txt).width, 4, 'white');
+		ctx.font = 'bold 30px' + ' ' + font;
+		txt = 'EASY';
+		ctx.fillText(txt, canvas.width/2
+													- ctx.measureText(txt).width/2, 380);
+		txt = 'MEDIUM';
+		ctx.fillText(txt, canvas.width/2
+													- ctx.measureText(txt).width/2, 420);
+		txt = 'HARD';
+		ctx.fillText(txt, canvas.width/2
+													- ctx.measureText(txt).width/2, 460);
 	}
 </script>
 
