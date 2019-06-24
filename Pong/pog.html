@@ -38,6 +38,10 @@
 	var mousePos_y;
 	var mousePos_x;
 
+	var easy_width;
+	var medium_width;
+	var hard_width;
+
   var ball_x = 50;
   var ball_y = 50;
 	const default_speed_x = 5;
@@ -54,8 +58,8 @@
   var p1score = 0;
   var p2score = 0;
   var show_win_screen = false;
-  var just_scored = true;
-  var scorer = 'P2';
+  var just_scored;
+  var scorer;
 
 	var paused = false;
 	var pause_render = false;
@@ -71,6 +75,7 @@
     canvas.width = 800;
     canvas.height = 600;
     ctx = canvas.getContext('2d');
+
 		// original context settings
 		ctx.save();
 
@@ -82,24 +87,8 @@
     setInterval(function() {
         move();
         draw();
+				console.log(show_start_screen);
     }, 1000/fps);
-
-    /* Event listener for mouse click. */
-    canvas.addEventListener('mousedown',
-      function(evt) {
-        if (show_win_screen) {
-          p1score = 0;
-          p2score = 0;
-					ball_speed_x = default_speed_x;
-          ball_speed_y = default_speed_y;
-					just_scored = true;
-					scorer = 'P2';
-          show_win_screen = false;
-        } else if (just_scored && scorer == 'P2') {
-          paddleShot();
-          just_scored = false;
-        }
-      });
 
 		/* Event listener for escape key press. */
 		document.addEventListener('keyup',
@@ -121,6 +110,7 @@
         var mousePos = calcMousePos(evt);
 				mousePos_x = mousePos.x;
 				mousePos_y = mousePos.y;
+				console.log(mousePos_x, mousePos_y);
         ppaddle_y = mousePos.y - (PADDLE_HEIGHT/2);
         if (ppaddle_y < 0) {
           ppaddle_y = 0;
@@ -128,6 +118,56 @@
           ppaddle_y = canvas.height - PADDLE_HEIGHT;
         }
       });
+
+			/* Event listener for mouse click. */
+	    canvas.addEventListener('mousedown',
+	      function(evt) {
+					// logic for win screen
+	        if (show_win_screen) {
+	          p1score = 0;
+	          p2score = 0;
+						ball_speed_x = default_speed_x;
+	          ball_speed_y = default_speed_y;
+						just_scored = true;
+						scorer = 'P2';
+	          show_win_screen = false;
+	        }
+
+					// logic for start screen
+					if (show_start_screen) {
+						if (mousePos_x >= canvas.width/2 - easy_width/2 &&
+								mousePos_x <= canvas.width/2 + easy_width/2 &&
+								mousePos_y >= 380 - 30 &&
+								mousePos_y <= 380) {
+								aipaddle_y_move = 6;
+								show_start_screen = false;
+								just_scored = true;
+								scorer = 'P2';
+						} else if (mousePos_x >= canvas.width/2 - medium_width/2 &&
+								mousePos_x <= canvas.width/2 + medium_width/2 &&
+								mousePos_y >= 420 - 30 &&
+								mousePos_y <= 420) {
+								aipaddle_y_move = 8;
+								show_start_screen = false;
+								just_scored = true;
+								scorer = 'P2';
+						} else if (mousePos_x >= canvas.width/2 - hard_width/2 &&
+								mousePos_x <= canvas.width/2 + hard_width/2 &&
+								mousePos_y >= 460 - 30 &&
+								mousePos_y <= 460) {
+								aipaddle_y_move = 10;
+								show_start_screen = false;
+								just_scored = true;
+								scorer = 'P2';
+						}
+					}
+
+					// logic for shooting ball
+					if (just_scored && scorer == 'P2') {
+	          paddleShot();
+	          just_scored = false;
+	        }
+	      });
   }
 
   /* Controls movement of ball object and AI. */
@@ -388,14 +428,14 @@
 							340, ctx.measureText(txt).width, 4, 'white');
 		ctx.font = 'bold 30px' + ' ' + font;
 		txt = 'EASY';
-		ctx.fillText(txt, canvas.width/2
-													- ctx.measureText(txt).width/2, 380);
+		easy_width = ctx.measureText(txt).width;
+		ctx.fillText(txt, canvas.width/2 - easy_width/2, 380);
 		txt = 'MEDIUM';
-		ctx.fillText(txt, canvas.width/2
-													- ctx.measureText(txt).width/2, 420);
+		medium_width = ctx.measureText(txt).width;
+		ctx.fillText(txt, canvas.width/2 - medium_width/2, 420);
 		txt = 'HARD';
-		ctx.fillText(txt, canvas.width/2
-													- ctx.measureText(txt).width/2, 460);
+		hard_width = ctx.measureText(txt).width;
+		ctx.fillText(txt, canvas.width/2 - hard_width/2, 460);
 	}
 </script>
 
