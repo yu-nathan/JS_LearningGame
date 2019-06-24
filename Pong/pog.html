@@ -10,7 +10,7 @@
 				margin: auto;
 				display: block;
 				width: 800px;
-				border: 1px solid red;
+				border: 1px solid #ff073a;
 			}
 
 			p {
@@ -55,6 +55,7 @@
   var scorer = 'P2';
 
 	var paused = false;
+	var pause_render = false;
 
   const PADDLE_THICKNESS = 10;
   const PADDLE_HEIGHT = 100;
@@ -67,6 +68,12 @@
     canvas.width = 800;
     canvas.height = 600;
     ctx = canvas.getContext('2d');
+		// original context settings
+		ctx.save();
+
+		// shadows for glow effect
+		ctx.shadowBlur = 20;
+		ctx.shadowColor = '#ff073a';
 
     /* Calls draw and move fps frames per second. */
     setInterval(function() {
@@ -100,6 +107,7 @@
 						paused = false;
 					} else {
 						paused = true;
+						pause_render = false;
 					}
 				}
 			});
@@ -182,11 +190,16 @@
   function draw() {
 		// pause screen
 		if (paused) {
-			ctx.fillStyle = '#49FB35';
-			ctx.font = 'bold 30px pdark'
-			txt = 'PAUSED';
-			ctx.fillText(txt, canvas.width/2
-														- ctx.measureText(txt).width/2, canvas.height/2 - 15);
+			if (!pause_render) {
+				ctx.save();
+				ctx.fillStyle = '#49fb35';
+				ctx.font = 'bold 30px pdark'
+				txt = 'PAUSED';
+				ctx.fillText(txt, canvas.width/2
+															- ctx.measureText(txt).width/2, canvas.height/2 - 15);
+				ctx.restore();
+				pause_render = true;
+			}
 			return;
 		}
 
@@ -232,7 +245,7 @@
               PADDLE_HEIGHT, 'white');
 
     // ball
-    colorCirc(ball_x, ball_y, 10, 'red');
+    colorCirc(ball_x, ball_y, 10, 'white');
 
     // scoreboard
     ctx.fillStyle = 'white';
@@ -264,7 +277,7 @@
   /* Draw the net. */
   function drawNet() {
     for(var i = 55; i < canvas.height; i += 40) {
-      colorRect(canvas.width/2 - 1, i, 2, 20, 'white');
+      colorRect(canvas.width/2 - 3, i, 6, 20, 'white');
     }
   }
 
