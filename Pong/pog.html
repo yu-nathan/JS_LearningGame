@@ -67,7 +67,7 @@
 
   const PADDLE_THICKNESS = 10;
   const PADDLE_HEIGHT = 100;
-  const WINNING_SCORE = 2;
+  const WINNING_SCORE = 0;
 
   window.onload = function() {
     /* Getting the canvas object and creating variable. */
@@ -120,6 +120,12 @@
 			/* Event listener for mouse click. */
 	    canvas.addEventListener('mousedown',
 	      function(evt) {
+					// logic for shooting ball
+					if (just_scored && scorer == 'P2') {
+	          paddleShot();
+	          just_scored = false;
+	        }
+
 					// logic for win screen
 	        if (show_win_screen) {
 	          p1score = 0;
@@ -129,12 +135,6 @@
 						just_scored = true;
 						scorer = 'P2';
 	          show_win_screen = false;
-	        }
-
-					// logic for shooting ball
-					if (just_scored && scorer == 'P2') {
-	          paddleShot();
-	          just_scored = false;
 	        }
 
 					// logic for start screen
