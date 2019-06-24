@@ -15,9 +15,11 @@
 
 			p {
 				margin: 0 auto;
+				color: white;
 				text-align: center;
 				font-size: 30px;
 				font-family: pdark;
+				text-shadow: 2px 2px 20px #ff073a;
 			}
 			</style>
 	</head>
@@ -70,6 +72,9 @@
   const WINNING_SCORE = 5;
 
   window.onload = function() {
+		/* Setting background color to black. */
+		document.body.style.backgroundColor = 'black';
+
     /* Getting the canvas object and creating variable. */
     canvas = document.getElementById('gameCanvas');
     canvas.width = 800;
