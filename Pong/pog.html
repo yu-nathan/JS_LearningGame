@@ -38,6 +38,7 @@
 	var mousePos_y;
 	var mousePos_x;
 
+	var difficulty;
 	var easy_width;
 	var medium_width;
 	var hard_width;
@@ -66,10 +67,9 @@
 
   const PADDLE_THICKNESS = 10;
   const PADDLE_HEIGHT = 100;
-  const WINNING_SCORE = 0;
+  const WINNING_SCORE = 2;
 
   window.onload = function() {
-    console.log("Hello World!");
     /* Getting the canvas object and creating variable. */
     canvas = document.getElementById('gameCanvas');
     canvas.width = 800;
@@ -87,7 +87,6 @@
     setInterval(function() {
         move();
         draw();
-				console.log(show_start_screen);
     }, 1000/fps);
 
 		/* Event listener for escape key press. */
@@ -110,7 +109,6 @@
         var mousePos = calcMousePos(evt);
 				mousePos_x = mousePos.x;
 				mousePos_y = mousePos.y;
-				console.log(mousePos_x, mousePos_y);
         ppaddle_y = mousePos.y - (PADDLE_HEIGHT/2);
         if (ppaddle_y < 0) {
           ppaddle_y = 0;
@@ -133,46 +131,49 @@
 	          show_win_screen = false;
 	        }
 
-					// logic for start screen
-					if (show_start_screen) {
-						if (mousePos_x >= canvas.width/2 - easy_width/2 &&
-								mousePos_x <= canvas.width/2 + easy_width/2 &&
-								mousePos_y >= 380 - 30 &&
-								mousePos_y <= 380) {
-								aipaddle_y_move = 6;
-								show_start_screen = false;
-								just_scored = true;
-								scorer = 'P2';
-						} else if (mousePos_x >= canvas.width/2 - medium_width/2 &&
-								mousePos_x <= canvas.width/2 + medium_width/2 &&
-								mousePos_y >= 420 - 30 &&
-								mousePos_y <= 420) {
-								aipaddle_y_move = 8;
-								show_start_screen = false;
-								just_scored = true;
-								scorer = 'P2';
-						} else if (mousePos_x >= canvas.width/2 - hard_width/2 &&
-								mousePos_x <= canvas.width/2 + hard_width/2 &&
-								mousePos_y >= 460 - 30 &&
-								mousePos_y <= 460) {
-								aipaddle_y_move = 10;
-								show_start_screen = false;
-								just_scored = true;
-								scorer = 'P2';
-						}
-					}
-
 					// logic for shooting ball
 					if (just_scored && scorer == 'P2') {
 	          paddleShot();
 	          just_scored = false;
 	        }
+
+					// logic for start screen
+					if (show_start_screen) {
+						var valid_click = false;
+						if (mousePos_x >= canvas.width/2 - easy_width/2 &&
+								mousePos_x <= canvas.width/2 + easy_width/2 &&
+								mousePos_y >= 380 - 30 &&
+								mousePos_y <= 380) {
+								aipaddle_y_move = 6;
+								valid_click = true;
+								difficulty = 'EASY';
+						} else if (mousePos_x >= canvas.width/2 - medium_width/2 &&
+								mousePos_x <= canvas.width/2 + medium_width/2 &&
+								mousePos_y >= 420 - 30 &&
+								mousePos_y <= 420) {
+								aipaddle_y_move = 8;
+								valid_click = true;
+								difficulty = 'MEDIUM';
+						} else if (mousePos_x >= canvas.width/2 - hard_width/2 &&
+								mousePos_x <= canvas.width/2 + hard_width/2 &&
+								mousePos_y >= 460 - 30 &&
+								mousePos_y <= 460) {
+								aipaddle_y_move = 10;
+								valid_click = true;
+								difficulty = 'HARD';
+						}
+						if (valid_click) {
+							show_start_screen = false;
+							just_scored = true;
+							scorer = 'P2';
+						}
+					}
 	      });
   }
 
   /* Controls movement of ball object and AI. */
   function move() {
-    if (show_win_screen || paused) {
+    if (show_win_screen || paused || show_start_screen) {
       return;
     }
 
@@ -238,7 +239,7 @@
 			if (!pause_render) {
 				ctx.save();
 				ctx.fillStyle = '#49fb35';
-				ctx.font = 'bold 30px pdark'
+				ctx.font = 'bold 30px pdark';
 				txt = 'PAUSED';
 				ctx.fillText(txt, canvas.width/2
 															- ctx.measureText(txt).width/2,
@@ -261,7 +262,7 @@
     // win screen
     if (show_win_screen) {
       ctx.fillStyle = 'white';
-      ctx.font = 'italic bold 30px pdark'
+      ctx.font = 'italic bold 30px pdark';
       if (p1score >= WINNING_SCORE) {
         txt = 'Left player wins!';
         ctx.fillText(txt, canvas.width/2
@@ -279,8 +280,8 @@
         ctx.fillText(txt, canvas.width/2
                               - ctx.measureText(txt).width/2, 250);
       }
-      ctx.font = '20px pdark'
-      txt = 'Click to continue.'
+      ctx.font = '20px pdark';
+      txt = 'Click to continue.';
       ctx.fillText(txt, canvas.width/2
                             - ctx.measureText(txt).width/2, 500);
       return;
@@ -301,15 +302,21 @@
 
     // scoreboard
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 40px pdark'
+    ctx.font = 'bold 40px pdark';
     txt = 'Score';
     ctx.fillText(txt, canvas.width/2
                           - ctx.measureText(txt).width/2, 50);
     colorRect(canvas.width/2 - 75, 55, 150, 3, 'white');
-    ctx.font = 'bold 35px pdark'
+    ctx.font = 'bold 35px pdark';
     txt = p1score + '   ' + p2score;
     ctx.fillText(txt, canvas.width/2
                           - ctx.measureText(txt).width/2, 100);
+
+		// difficulty setting
+		ctx.fillStyle = 'white';
+		ctx.font = '20px pdark';
+		txt = 'DIFFICULTY: ' + difficulty;
+		ctx.fillText(txt, canvas.width - ctx.measureText(txt).width - 5, 25);
   }
 
   /* Fills in circle objects. */
