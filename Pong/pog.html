@@ -37,8 +37,8 @@
   var ctx;
   var txt;
 	var fps = 60;
-	var mousePos_y;
 	var mousePos_x;
+	var mousePos_y;
 
 	var difficulty;
 	var easy_width;
@@ -147,21 +147,21 @@
 						var valid_click = false;
 						if (mousePos_x >= canvas.width/2 - easy_width/2 &&
 								mousePos_x <= canvas.width/2 + easy_width/2 &&
-								mousePos_y >= 380 - 30 &&
+								mousePos_y >= 380 - 20 &&
 								mousePos_y <= 380) {
 								aipaddle_y_move = 6;
 								valid_click = true;
 								difficulty = 'EASY';
 						} else if (mousePos_x >= canvas.width/2 - medium_width/2 &&
 								mousePos_x <= canvas.width/2 + medium_width/2 &&
-								mousePos_y >= 420 - 30 &&
+								mousePos_y >= 420 - 20 &&
 								mousePos_y <= 420) {
 								aipaddle_y_move = 8;
 								valid_click = true;
 								difficulty = 'MEDIUM';
 						} else if (mousePos_x >= canvas.width/2 - hard_width/2 &&
 								mousePos_x <= canvas.width/2 + hard_width/2 &&
-								mousePos_y >= 460 - 30 &&
+								mousePos_y >= 460 - 20 &&
 								mousePos_y <= 460) {
 								aipaddle_y_move = 10;
 								valid_click = true;
