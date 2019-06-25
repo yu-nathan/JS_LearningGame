@@ -1,7 +1,6 @@
 # PONG
 Basic functionality and graphics learned from Chris DeLeon on Udemy.  
-Use this link to preview in your browser:  
-&nbsp;&nbsp;&nbsp;&nbsp; [HTML Preview](http://htmlpreview.github.io/?https://github.com/yu-nathan/JS_LearningGames/blob/master/Pong/pog.html)  
+Use this link to preview in your browser: [HTML Preview](http://htmlpreview.github.io/?https://github.com/yu-nathan/JS_LearningGames/blob/master/Pong/pog.html)  
 Simple pong game for learning some JS.  
 Click to shoot the pong ball, and press escape to pause.
 
