@@ -41,6 +41,7 @@
 	var mousePos_y;
 
 	var difficulty;
+	var difficulty_ball_y_multiplier;
 	var easy_width;
 	var medium_width;
 	var hard_width;
@@ -152,6 +153,7 @@
 								aipaddle_y_move = 6;
 								valid_click = true;
 								difficulty = 'EASY';
+								difficulty_ball_y_multiplier = 0.29;
 						} else if (mousePos_x >= canvas.width/2 - medium_width/2 &&
 								mousePos_x <= canvas.width/2 + medium_width/2 &&
 								mousePos_y >= 420 - 20 &&
@@ -159,6 +161,7 @@
 								aipaddle_y_move = 8;
 								valid_click = true;
 								difficulty = 'MEDIUM';
+								difficulty_ball_y_multiplier = 0.32;
 						} else if (mousePos_x >= canvas.width/2 - hard_width/2 &&
 								mousePos_x <= canvas.width/2 + hard_width/2 &&
 								mousePos_y >= 460 - 20 &&
@@ -166,6 +169,7 @@
 								aipaddle_y_move = 10;
 								valid_click = true;
 								difficulty = 'HARD';
+								difficulty_ball_y_multiplier = 0.35;
 						}
 						if (valid_click) {
 							show_start_screen = false;
@@ -206,7 +210,7 @@
 
 					// determines vertical speed based on ball position relative to paddle
           var delta_y = ball_y - (ppaddle_y + PADDLE_HEIGHT/2);
-          ball_speed_y = delta_y * 0.35;
+          ball_speed_y = delta_y * difficulty_ball_y_multiplier;
       }
     }
     if (ball_x < 0) {
@@ -221,7 +225,7 @@
 
 					// determines vertical speed based on ball position relative to paddle
           var delta_y = ball_y - (aipaddle_y + PADDLE_HEIGHT/2);
-          ball_speed_y = delta_y * 0.35;
+          ball_speed_y = delta_y * difficulty_ball_y_multiplier;
       }
     }
     if (ball_x > canvas.width) {
