@@ -127,24 +127,14 @@
 	    canvas.addEventListener('mousedown',
 	      function(evt) {
 					// logic for shooting ball
-					if (just_scored && scorer == 'P2') {
+					if (just_scored && scorer == 'P2' && !show_win_screen) {
 	          paddleShot();
 	          just_scored = false;
+						return;
 	        }
 
-					// logic for win screen
-	        if (show_win_screen) {
-	          p1score = 0;
-	          p2score = 0;
-						ball_speed_x = default_speed_x;
-	          ball_speed_y = default_speed_y;
-						just_scored = true;
-						scorer = 'P2';
-	          show_win_screen = false;
-	        }
-
-					// logic for start screen
-					if (show_start_screen) {
+					// logic for start screen and win screen
+					if (show_start_screen || show_win_screen) {
 						var valid_click = false;
 						if (mousePos_x >= canvas.width/2 - easy_width/2 &&
 								mousePos_x <= canvas.width/2 + easy_width/2 &&
@@ -172,10 +162,24 @@
 								difficulty_ball_y_multiplier = 0.35;
 						}
 						if (valid_click) {
-							show_start_screen = false;
 							just_scored = true;
 							scorer = 'P2';
+							if (show_start_screen) {
+								show_start_screen = false;
+								just_scored = true;
+								scorer = 'P2';
+							}
+							if (show_win_screen) {
+								p1score = 0;
+			          p2score = 0;
+								ball_speed_x = default_speed_x;
+			          ball_speed_y = default_speed_y;
+								just_scored = true;
+								scorer = 'P2';
+			          show_win_screen = false;
+							}
 						}
+						return;
 					}
 	      });
   }
@@ -270,29 +274,7 @@
 
     // win screen
     if (show_win_screen) {
-      ctx.fillStyle = 'white';
-      ctx.font = 'italic bold 30px pdark';
-      if (p1score >= WINNING_SCORE) {
-        txt = 'Left player wins!';
-        ctx.fillText(txt, canvas.width/2
-                              - ctx.measureText(txt).width/2, 200);
-        ctx.font = '27px pdark';
-        txt = p1score + ' : ' + p2score;
-        ctx.fillText(txt, canvas.width/2
-                              - ctx.measureText(txt).width/2, 250);
-      } else if (p2score >= WINNING_SCORE) {
-        txt = 'Right player wins!';
-        ctx.fillText(txt, canvas.width/2
-                              - ctx.measureText(txt).width/2, 200);
-        ctx.font = '27px pdark';
-				txt = p1score + ' : ' + p2score;
-        ctx.fillText(txt, canvas.width/2
-                              - ctx.measureText(txt).width/2, 250);
-      }
-      ctx.font = '20px pdark';
-      txt = 'Click to continue.';
-      ctx.fillText(txt, canvas.width/2
-                            - ctx.measureText(txt).width/2, 500);
+			draw_win(txt, 'pdark', 'white');
       return;
     }
 
@@ -434,6 +416,47 @@
 		txt = 'PONG';
 		ctx.fillText(txt, canvas.width/2
 													- ctx.measureText(txt).width/2, 225);
+
+		// difficulties
+		ctx.font = 'bold 35px' + ' ' + font;
+		txt = 'DIFFICULTY';
+		ctx.fillText(txt, canvas.width/2
+													- ctx.measureText(txt).width/2, 330);
+		colorRect(canvas.width/2 - ctx.measureText(txt).width/2,
+							340, ctx.measureText(txt).width, 4, 'white');
+		ctx.font = 'bold 30px' + ' ' + font;
+		txt = 'EASY';
+		easy_width = ctx.measureText(txt).width;
+		ctx.fillText(txt, canvas.width/2 - easy_width/2, 380);
+		txt = 'MEDIUM';
+		medium_width = ctx.measureText(txt).width;
+		ctx.fillText(txt, canvas.width/2 - medium_width/2, 420);
+		txt = 'HARD';
+		hard_width = ctx.measureText(txt).width;
+		ctx.fillText(txt, canvas.width/2 - hard_width/2, 460);
+	}
+
+	/* Draws the win screen with options for choosing difficulty. */
+	function draw_win(txt, font, color) {
+		ctx.fillStyle = color;
+		ctx.font = 'italic bold 35px' + ' ' + font;
+		if (p1score >= WINNING_SCORE) {
+			txt = 'Left player wins!';
+			ctx.fillText(txt, canvas.width/2
+														- ctx.measureText(txt).width/2, 200);
+			ctx.font = '32px' + ' ' + font;
+			txt = p1score + ' : ' + p2score;
+			ctx.fillText(txt, canvas.width/2
+														- ctx.measureText(txt).width/2, 250);
+		} else if (p2score >= WINNING_SCORE) {
+			txt = 'Right player wins!';
+			ctx.fillText(txt, canvas.width/2
+														- ctx.measureText(txt).width/2, 200);
+			ctx.font = '32px' + ' ' + font;
+			txt = p1score + ' : ' + p2score;
+			ctx.fillText(txt, canvas.width/2
+														- ctx.measureText(txt).width/2, 250);
+		}
 
 		// difficulties
 		ctx.font = 'bold 35px' + ' ' + font;
