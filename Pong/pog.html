@@ -70,7 +70,7 @@
 
     const PADDLE_THICKNESS = 10;
     const PADDLE_HEIGHT = 100;
-    const WINNING_SCORE = 5;
+    const WINNING_SCORE = 1;
 
     window.onload = function() {
         /* Setting background color to black. */
@@ -417,24 +417,7 @@
         txt = 'PONG';
         ctx.fillText(txt, canvas.width/2
                         - ctx.measureText(txt).width/2, 225);
-
-        // difficulties
-        ctx.font = 'bold 35px' + ' ' + font;
-        txt = 'DIFFICULTY';
-        ctx.fillText(txt, canvas.width/2
-                        - ctx.measureText(txt).width/2, 330);
-        colorRect(canvas.width/2 - ctx.measureText(txt).width/2,
-                    340, ctx.measureText(txt).width, 4, 'white');
-        ctx.font = 'bold 30px' + ' ' + font;
-        txt = 'EASY';
-        easy_width = ctx.measureText(txt).width;
-        ctx.fillText(txt, canvas.width/2 - easy_width/2, 380);
-        txt = 'MEDIUM';
-        medium_width = ctx.measureText(txt).width;
-        ctx.fillText(txt, canvas.width/2 - medium_width/2, 420);
-        txt = 'HARD';
-        hard_width = ctx.measureText(txt).width;
-        ctx.fillText(txt, canvas.width/2 - hard_width/2, 460);
+        draw_difficulties(txt, font, color);
     }
 
     /* Draws the win screen with options for choosing difficulty. */
@@ -458,8 +441,11 @@
             ctx.fillText(txt, canvas.width/2
                             - ctx.measureText(txt).width/2, 250);
         }
+        draw_difficulties(txt, font, color);
+    }
 
-        // difficulties
+    /* Draws difficulty options. */
+    function draw_difficulties(txt, font, color) {
         ctx.font = 'bold 35px' + ' ' + font;
         txt = 'DIFFICULTY';
         ctx.fillText(txt, canvas.width/2
